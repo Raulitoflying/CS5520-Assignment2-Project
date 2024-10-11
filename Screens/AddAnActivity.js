@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Alert, StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
 import { commonStyles } from '../helper/helper';
@@ -14,6 +15,26 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
   const [date, setDate] = useState(new Date());
 
   const handlePressOut = () => {
+=======
+import { Alert, Button, StyleSheet, TextInput, View } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { commonStyles } from '../Helper/color'
+import { Context } from '../App';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import FormItem from './components/Formitem';
+
+export default function AddADietEntry({navigation}) {
+  const { theme, addADietEntry } = useContext(Context);
+  const [isCalendarShow, setIsCalendarShow] = useState(false);
+  const [description, setDescription] = useState();
+  const [calories, setCalories] = useState();
+  const [date, setDate] = useState();
+
+  const handlePressOut = () => {
+    if (!isCalendarShow && !date) {
+      setDate(new Date());
+    }
+>>>>>>> 1d3df7abdaa7cea89f6780a9b026eefa66418eb1
     setIsCalendarShow(prev => !prev);
   }
 
@@ -22,6 +43,7 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
   }
 
   const handleSave = () => {
+<<<<<<< HEAD
     if (!activity || !date || !duration || isNaN(duration) || Number(duration) < 0) {
       Alert.alert('Invalid input', 'Please fill the fields correctly.');
       return;
@@ -31,12 +53,25 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
       value: `${Number(duration)} min`,
       date: date.toDateString(),
       isSpecial: Number(duration) > 60 && (activity === 'Running' || activity === 'Weights'),
+=======
+    // validate the inputs
+    if (!description || !date || !calories || isNaN(calories) || Number(calories) < 0) {
+      Alert.alert('Invalid input', 'Please fill the fields correctly.');
+      return;
+    }
+    addADietEntry({
+      name: description,
+      value: Number(calories),
+      date: date.toString().slice(0, 15),
+      isSpecial: Number(calories) > 800,
+>>>>>>> 1d3df7abdaa7cea89f6780a9b026eefa66418eb1
     });
     navigation.goBack();
   }
 
   return (
     <View style={[commonStyles.centerContainer, commonStyles[theme], commonStyles.content]}>
+<<<<<<< HEAD
       <FormItem label='Activity *'>
         <View style={styles.inputContainer }>
           <Icon name="directions-run" size={24} color="#757575" style={styles.icon} />
@@ -181,3 +216,48 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
+=======
+      <FormItem label='Description *'>
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input, commonStyles.description]}
+          value={description}
+          multiline={true}
+          onChangeText={newDescription => setDescription(newDescription)}
+        />
+      </FormItem>
+      <FormItem label='Calories *'>
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input]}
+          value={calories}
+          onChangeText={newCalories => setCalories(newCalories)}
+        />
+      </FormItem>
+      <FormItem label='Date *'>
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input]}
+          value={date ? date.toString().slice(0, 15) : ''}
+          inputMode='none'
+          onPressOut={handlePressOut}
+          onBlur={() => setIsCalendarShow(false)}
+        />
+        <View style={commonStyles.dateTimePicker}>
+          {isCalendarShow && <DateTimePicker
+            value={date || new Date()}
+            onChange={(event, selectedDate) => {
+              setIsCalendarShow(false);
+              setDate(selectedDate);
+            }}
+            display="inline"
+          />}
+        </View>
+      </FormItem>
+      {!isCalendarShow && <View style={commonStyles.buttonGroup}>
+        <Button title='Cancel' onPress={handleCancel} />
+        <Button title='Save' onPress={handleSave} />
+      </View>}
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({})
+>>>>>>> 1d3df7abdaa7cea89f6780a9b026eefa66418eb1

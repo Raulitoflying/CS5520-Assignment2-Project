@@ -2,9 +2,9 @@ import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddAnActivity from './Screens/AddAnActivity';
-import AddADietEntry from './Screens/AddADietEntry';
+import AddADietEntry from './screens/AddADietEntry';
 import Home from './Components/Home';
-import { colors, commonStyles } from './helper/helper';
+import { colors, commonStyles } from './helper/color';
 import React, { useState } from 'react';
 
 const Stack = createNativeStackNavigator();

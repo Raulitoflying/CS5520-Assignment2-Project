@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Alert, Button, StyleSheet, TextInput, TouchableOpacity, Text, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { commonStyles } from '../helper/helper'
@@ -12,6 +13,26 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
   const [date, setDate] = useState(new Date());
 
   const handlePressOut = () => {
+=======
+import { Alert, Button, StyleSheet, TextInput, View } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { commonStyles } from '../Helper/color';
+import { Context } from '../App';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import FormItem from './components/FormItem';
+
+export default function AddADietEntry({navigation}) {
+  const { theme, addADietEntry } = useContext(Context);
+  const [isCalendarShow, setIsCalendarShow] = useState(false);
+  const [description, setDescription] = useState();
+  const [calories, setCalories] = useState();
+  const [date, setDate] = useState();
+
+  const handlePressOut = () => {
+    if (!isCalendarShow && !date) {
+      setDate(new Date());
+    }
+>>>>>>> 1d3df7abdaa7cea89f6780a9b026eefa66418eb1
     setIsCalendarShow(prev => !prev);
   }
 
@@ -20,6 +41,10 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
   }
 
   const handleSave = () => {
+<<<<<<< HEAD
+=======
+    // validate the inputs
+>>>>>>> 1d3df7abdaa7cea89f6780a9b026eefa66418eb1
     if (!description || !date || !calories || isNaN(calories) || Number(calories) < 0) {
       Alert.alert('Invalid input', 'Please fill the fields correctly.');
       return;
@@ -36,6 +61,7 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
   return (
     <View style={[commonStyles.centerContainer, commonStyles[theme], commonStyles.content]}>
       <FormItem label='Description *'>
+<<<<<<< HEAD
         <View style={styles.inputContainer}>
           <Icon name="description" size={24} color="#757575" style={styles.icon} />
           <TextInput
@@ -151,3 +177,47 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
+=======
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input, commonStyles.description]}
+          value={description}
+          multiline={true}
+          onChangeText={newDescription => setDescription(newDescription)}
+        />
+      </FormItem>
+      <FormItem label='Calories *'>
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input]}
+          value={calories}
+          onChangeText={newCalories => setCalories(newCalories)}
+        />
+      </FormItem>
+      <FormItem label='Date *'>
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input]}
+          value={date ? date.toString().slice(0, 15) : ''}
+          inputMode='none'
+          onPressOut={handlePressOut}
+          onBlur={() => setIsCalendarShow(false)}
+        />
+        <View style={commonStyles.dateTimePicker}>
+          {isCalendarShow && <DateTimePicker
+            value={date || new Date()}
+            onChange={(event, selectedDate) => {
+              setIsCalendarShow(false);
+              setDate(selectedDate);
+            }}
+            display="inline"
+          />}
+        </View>
+      </FormItem>
+      {!isCalendarShow && <View style={commonStyles.buttonGroup}>
+        <Button title='Cancel' onPress={handleCancel} />
+        <Button title='Save' onPress={handleSave} />
+      </View>}
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({})
+>>>>>>> 1d3df7abdaa7cea89f6780a9b026eefa66418eb1
