@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Alert, StyleSheet, TextInput, View, TouchableOpacity, Text } from 'react-native';
 import { commonStyles } from '../helper/helper';
@@ -6,6 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FormItem from '../Components/FormItem';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 export default function AddAnActivity({navigation, theme, addAnActivity}) {
   const [dropDownPickerOpen, setDropDownPickerOpen] = useState(false);
@@ -15,7 +15,6 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
   const [date, setDate] = useState(new Date());
 
   const handlePressOut = () => {
-
     setIsCalendarShow(prev => !prev);
   }
 
@@ -31,50 +30,32 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
     addAnActivity({
       name: activity,
       value: `${Number(duration)} min`,
-      date: date.toDateString(),
-        isSpecial: Number(duration) > 60 && (activity === 'Running' || activity === 'Weights'),
-      });
-
-    // validate the inputs
-    if (!description || !date || !calories || isNaN(calories) || Number(calories) < 0) {
-      Alert.alert('Invalid input', 'Please fill the fields correctly.');
-      return;
-    }
-    addADietEntry({
-      name: description,
-      value: Number(calories),
       date: date.toString().slice(0, 15),
-      isSpecial: Number(calories) > 500 && (description === 'Pizza' || description === 'Hamburger'),
+      isSpecial: Number(duration) > 60 && (activity === 'Running' || activity === 'Weights'),
     });
     navigation.goBack();
   }
 
   return (
     <View style={[commonStyles.centerContainer, commonStyles[theme], commonStyles.content]}>
+      <View style={commonStyles.activity}>
       <FormItem label='Activity *'>
-        <View style={styles.inputContainer }>
-          <Icon name="directions-run" size={24} color="#757575" style={styles.icon} />
           <DropDownPicker
-            mode='modal'
-            style={styles.dropdownStyle}
-            containerStyle={styles.dropdownContainer}
-            dropDownContainerStyle={styles.dropdownListContainer}
+            style={commonStyles.formItem}
             placeholder='Select an activity'
+            labelProps={{style: commonStyles.lightText}}
             open={dropDownPickerOpen}
             value={activity}
-            items={['Walking', 'Running', 'Swimming', 'Weights', 'Yoga', 'Cycling', 'Hiking'].map(item => ({
-              label: item,
-              value: item,
-              labelStyle: styles.dropdownItemLabel
-            }))}
+            items={['Walking', 'Running', 'Swimming', 'Weights', 'Yoga', 'Cycling', 'Hiking'].map(item =>
+              ({label: item, value: item, labelStyle: commonStyles.lightText})
+            )}
             setOpen={setDropDownPickerOpen}
             setValue={setActivity}
-            textStyle={styles.dropdownText}
           />
-        </View>
-      </FormItem>
+        </FormItem>
+      </View>
       <FormItem label='Duration (min) *'>
-        <View style={styles.inputContainer}>
+        <View style={[styles.inputContainer, { zIndex: 1 }]}>
           <Icon name="timer" size={24} color="#757575" style={styles.icon} />
           <TextInput
             style={styles.input}
@@ -83,13 +64,11 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
             placeholderTextColor="#9e9e9e"
             keyboardType="numeric"
             onChangeText={setDuration}
-            zIndex={999}
-            zIndexInverse={999}
           />
         </View>
       </FormItem>
       <FormItem label='Date *'>
-        <TouchableOpacity onPress={handlePressOut} style={styles.inputContainer}>
+        <TouchableOpacity onPress={handlePressOut} style={[styles.inputContainer, { zIndex: 1 }]}>
           <Icon name="event" size={24} color="#757575" style={styles.icon} />
           <Text style={styles.dateText}>
             {date.toDateString()}
@@ -153,12 +132,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   dropdownContainer: {
-    flex: 10,
+    flex: 1,
   },
   dropdownListContainer: {
     borderColor: '#e0e0e0',
     backgroundColor: '#f5f5f5',
-    zIndex: 5000
   },
   dropdownText: {
     fontSize: 16,
@@ -166,7 +144,6 @@ const styles = StyleSheet.create({
   },
   dropdownItemLabel: {
     color: '#212121',
-
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -195,4 +172,3 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
-
