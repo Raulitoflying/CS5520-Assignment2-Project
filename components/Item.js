@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { colors, commonStyles } from '../helper/helper';
+import { colors } from '../Helper/color';
+import { Context } from '../App';
 
 export default function Item({item: {name, value, date, isSpecial}}) {
   return (
