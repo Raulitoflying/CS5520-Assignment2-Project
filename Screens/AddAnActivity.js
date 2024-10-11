@@ -39,7 +39,7 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
   return (
     <View style={[commonStyles.centerContainer, commonStyles[theme], commonStyles.content]}>
       <View style={commonStyles.activity}>
-      <FormItem label='Activity *'>
+        <FormItem label='Activity *'>
           <DropDownPicker
             style={commonStyles.formItem}
             placeholder='Select an activity'
@@ -54,19 +54,19 @@ export default function AddAnActivity({navigation, theme, addAnActivity}) {
           />
         </FormItem>
       </View>
-      <FormItem label='Duration (min) *'>
-        <View style={[styles.inputContainer, { zIndex: 1 }]}>
-          <Icon name="timer" size={24} color="#757575" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            value={duration}
-            placeholder="Enter duration"
-            placeholderTextColor="#9e9e9e"
-            keyboardType="numeric"
-            onChangeText={setDuration}
-          />
-        </View>
-      </FormItem>
+        <FormItem label='Duration (min) *'>
+          <View style={[styles.inputContainer, { zIndex: 1 }]}>
+            <Icon name="timer" size={24} color="#757575" style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              value={duration}
+              placeholder="Enter duration"
+              placeholderTextColor="#9e9e9e"
+              keyboardType="numeric"
+              onChangeText={setDuration}
+            />
+          </View>
+        </FormItem>
       <FormItem label='Date *'>
         <TouchableOpacity onPress={handlePressOut} style={[styles.inputContainer, { zIndex: 1 }]}>
           <Icon name="event" size={24} color="#757575" style={styles.icon} />
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginBottom: 16,
     backgroundColor: '#f5f5f5',
+    zIndex: 999,
   },
   icon: {
     marginRight: 12,
