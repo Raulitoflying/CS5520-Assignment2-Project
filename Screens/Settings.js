@@ -4,7 +4,7 @@ import { commonStyles } from '../helper/helper';
 
 export default function Settings({ theme, toggleTheme }) {
   return (
-    <View style={[commonStyles.topContainer, commonStyles[theme]]}>
+    <View style={[commonStyles.centerContainer, commonStyles[theme]]}>
       <Button title="Toggle Theme" onPress={toggleTheme} />
     </View>
   );
