@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Activities from '../Screens/Activities';
 import Diet from '../Screens/Diet';
 import Settings from '../Screens/Settings';
-import { colors, commonStyles } from '../helper/helper';
+import { colors, commonStyles } from '../Helper/color';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
