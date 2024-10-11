@@ -1,5 +1,5 @@
-import { Button, StyleSheet } from 'react-native'
-import React from 'react'
+import { Button, StyleSheet } from 'react-native';
+import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Activities from '../Screens/Activities';
 import Diet from '../Screens/Diet';
@@ -9,40 +9,42 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const Tab = createBottomTabNavigator();
 
-// Home is a bottom tab navigator 
-export default function Home({navigation}) {
+export default function Home({ navigation, theme, activities, diet, toggleTheme, addAnActivity, addADietEntry }) {
   return (
     <Tab.Navigator
-        screenOptions={{
-            headerStyle: commonStyles.navigatorBackground,
-            headerTintColor: colors.white,
-            tabBarStyle: commonStyles.navigatorBackground,
-            tabBarActiveTintColor: colors.yellow,
-        }}
+      screenOptions={{
+        headerStyle: commonStyles.navigatorBackground,
+        headerTintColor: colors.white,
+        tabBarStyle: commonStyles.navigatorBackground,
+        tabBarActiveTintColor: colors.yellow,
+      }}
     >
       <Tab.Screen
         name="Activities"
-        component={Activities}
         options={{
-            tabBarIcon: ({ color, size }) => <MaterialIcons name="directions-run" size={size} color={color} />,
-            headerRight: () => <Button title='Add' onPress={() => navigation.navigate('AddAnActivity')} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="directions-run" size={size} color={color} />,
+          headerRight: () => <Button title='Add' onPress={() => navigation.navigate('AddAnActivity')} />,
         }}
-      />
+      >
+        {props => <Activities {...props} theme={theme} activities={activities} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Diet"
-        component={Diet}
         options={{
-            tabBarIcon: ({ color, size }) => <MaterialIcons name="fastfood" size={size} color={color} />,
-            headerRight: () => <Button title='Add' onPress={() => navigation.navigate('AddADietEntry')} />,
+          tabBarIcon: ({ color, size }) => <MaterialIcons name="fastfood" size={size} color={color} />,
+          headerRight: () => <Button title='Add' onPress={() => navigation.navigate('AddADietEntry')} />,
         }}
-      />
+      >
+        {props => <Diet {...props} theme={theme} diet={diet} />}
+      </Tab.Screen>
       <Tab.Screen
         name="Settings"
-        component={Settings}
-        options={{ tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={size} color={color} />}}
-      />
+        options={{ tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={size} color={color} /> }}
+      >
+        {props => <Settings {...props} theme={theme} toggleTheme={toggleTheme} />}
+      </Tab.Screen>
     </Tab.Navigator>
-  )
+  );
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
