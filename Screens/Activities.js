@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 import React, { useContext } from 'react'
-import { Context } from '../Helper/context'
+import { Context } from '../App';
 import { commonStyles } from '../Helper/helper';
 import ItemsList from '../Components/ItemsList';
 
