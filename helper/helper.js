@@ -27,7 +27,7 @@ export const commonStyles = StyleSheet.create({
         marginBottom: 5,
     },
     formItem: {
-        backgroundColor: colors.grey,
+        backgroundColor: '#f5f5f5',
     },
     input: {
         height: 32,
