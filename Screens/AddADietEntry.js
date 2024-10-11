@@ -1,4 +1,3 @@
-
 import { Alert, Button, StyleSheet, TextInput, TouchableOpacity, Text, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { commonStyles } from '../helper/helper'
@@ -13,7 +12,6 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
   const [date, setDate] = useState(new Date());
 
   const handlePressOut = () => {
-
     setIsCalendarShow(prev => !prev);
   }
 
@@ -22,7 +20,6 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
   }
 
   const handleSave = () => {
-
     if (!description || !date || !calories || isNaN(calories) || Number(calories) < 0) {
       Alert.alert('Invalid input', 'Please fill the fields correctly.');
       return;
