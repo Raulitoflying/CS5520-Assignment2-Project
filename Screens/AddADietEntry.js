@@ -9,7 +9,7 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
   const [isCalendarShow, setIsCalendarShow] = useState(false);
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(null);
 
   const handlePressOut = () => {
     setIsCalendarShow(prev => !prev);
@@ -60,36 +60,33 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
             onChangeText={setCalories}
           />
         </View>
-      </FormItem>
+        </FormItem>
       <FormItem label='Date *'>
-        <TouchableOpacity onPress={handlePressOut} style={styles.inputContainer}>
-          <Icon name="event" size={24} color="#757575" style={styles.icon} />
-          <Text style={styles.dateText}>
-            {date.toDateString()}
-          </Text>
-        </TouchableOpacity>
-        {isCalendarShow && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
+        <TextInput
+          style={[commonStyles.formItem, commonStyles.input]}
+          value={date ? date.toString().slice(0, 15) : ''}
+          inputMode='none'
+          placeholder="Select a date"
+          onPressOut={handlePressOut}
+          onBlur={() => setIsCalendarShow(false)}
+        />
+        <View style={commonStyles.dateTimePicker}>
+          {isCalendarShow && <DateTimePicker
+            value={date || new Date()}
             onChange={(event, selectedDate) => {
               setIsCalendarShow(false);
-              if (selectedDate) setDate(selectedDate);
+              setDate(selectedDate);
             }}
-          />
-        )}
+            display="inline"
+          />}
+        </View>
       </FormItem>
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleCancel}>
-          <Text style={styles.buttonText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
-          <Text style={[styles.buttonText, styles.saveButtonText]}>Save</Text>
-        </TouchableOpacity>
-      </View>
+      {!isCalendarShow && <View style={commonStyles.buttonGroup}>
+        <Button title='Cancel' onPress={handleCancel} />
+        <Button title='Save' onPress={handleSave} />
+      </View>}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
