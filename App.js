@@ -29,7 +29,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerStyle: commonStyles.navigatorBackground, headerTintColor: colors.white }}>
-        <Stack.Screen name='Home'>
+        <Stack.Screen name='Home' options={{ headerShown: false }}>
           {props => (
             <Home
               {...props}
