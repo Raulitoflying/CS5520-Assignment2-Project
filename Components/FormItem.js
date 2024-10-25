@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
 import { commonStyles } from '../helper/helper'
+import { Context } from '../helper/context';
 
-
-export default function FormItem({label, children, theme}) {
+export default function FormItem({label, children}) {
+  const { theme } = useContext(Context);
 
   return (
     <View style={commonStyles.item}>
