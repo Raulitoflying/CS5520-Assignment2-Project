@@ -1,15 +1,17 @@
-import { Button, StyleSheet } from 'react-native';
-import React from 'react';
+import { Pressable, StyleSheet } from 'react-native'
+import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Activities from '../Screens/Activities';
 import Diet from '../Screens/Diet';
 import Settings from '../Screens/Settings';
 import { colors, commonStyles } from '../helper/helper';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const Tab = createBottomTabNavigator();
 
-export default function Home({ navigation, theme, activities, diet, toggleTheme, addAnActivity, addADietEntry }) {
+// Home is a bottom tab navigator 
+export default function Home({navigation}) {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -21,30 +23,43 @@ export default function Home({ navigation, theme, activities, diet, toggleTheme,
     >
       <Tab.Screen
         name="Activities"
+        component={Activities}
         options={{
           tabBarIcon: ({ color, size }) => <MaterialIcons name="directions-run" size={size} color={color} />,
-          headerRight: () => <Button title='Add' onPress={() => navigation.navigate('AddAnActivity')} />,
+          headerRight: () =>
+            <Pressable
+              android_ripple={{color: 'white', radius: 20}}
+              style={({pressed}) => [commonStyles.headerIcons, pressed && commonStyles.pressedStyle]}
+              onPress={() => navigation.navigate('AddAnActivity')}
+            >
+              <AntDesign name="plus" size={24} color="white" />
+              <MaterialIcons name="directions-run" size={24} color="white" />
+            </Pressable>
         }}
-      >
-        {props => <Activities {...props} theme={theme} activities={activities} />}
-      </Tab.Screen>
+      />
       <Tab.Screen
         name="Diet"
+        component={Diet}
         options={{
           tabBarIcon: ({ color, size }) => <MaterialIcons name="fastfood" size={size} color={color} />,
-          headerRight: () => <Button title='Add' onPress={() => navigation.navigate('AddADietEntry')} />,
+          headerRight: () =>
+            <Pressable
+              android_ripple={{color: 'white', radius: 20}}
+              style={({pressed}) => [commonStyles.headerIcons, pressed && commonStyles.pressedStyle]}
+              onPress={() => navigation.navigate('AddADietEntry')}
+            >
+              <AntDesign name="plus" size={24} color="white" />
+              <MaterialIcons name="fastfood" size={24} color="white" />
+            </Pressable>
         }}
-      >
-        {props => <Diet {...props} theme={theme} diet={diet} />}
-      </Tab.Screen>
+      />
       <Tab.Screen
         name="Settings"
-        options={{ tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={size} color={color} /> }}
-      >
-        {props => <Settings {...props} theme={theme} toggleTheme={toggleTheme} />}
-      </Tab.Screen>
+        component={Settings}
+        options={{ tabBarIcon: ({ color, size }) => <MaterialIcons name="settings" size={size} color={color} />}}
+      />
     </Tab.Navigator>
-  );
+  )
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({})
