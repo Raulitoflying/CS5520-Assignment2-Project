@@ -5,6 +5,7 @@ import { Context } from '../helper/context'
 import PressableButton from '../Components/PressableButton';
 
 export default function Settings() {
+  // Use React Context to communicate theme change to all the components.
   const { theme, toggleTheme } = useContext(Context);
 
   return (
