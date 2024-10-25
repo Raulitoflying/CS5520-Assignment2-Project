@@ -1,10 +1,11 @@
 import { StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { commonStyles } from '../helper/helper'
+import { Context } from '../helper/context'
 import PressableButton from '../Components/PressableButton';
 
-export default function Settings(theme, toggleTheme) {
-  // Use React Context to communicate theme change to all the components.
+export default function Settings() {
+  const { theme, toggleTheme } = useContext(Context);
 
   return (
     <View style={[commonStyles.centerContainer, commonStyles[theme]]}>
