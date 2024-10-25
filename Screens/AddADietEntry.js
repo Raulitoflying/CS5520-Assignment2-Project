@@ -1,13 +1,14 @@
-import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Pressable, StyleSheet, Text, TextInput, View, } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { commonStyles } from '../helper/helper'
 import { Context } from '../helper/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FormItem from '../Components/FormItem';
-import { deleteFromDB, updateInDB, writeToDB } from '../Firebase/firestoreHelper';
+import { deleteFromDB, updateInDB, writeToDB } from '../Firebase/firebaseHelper';
 import Checkbox from 'expo-checkbox';
 import PressableButton from '../Components/PressableButton';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function AddADietEntry({navigation, route}) {
   const { theme } = useContext(Context);
