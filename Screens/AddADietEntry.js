@@ -1,17 +1,57 @@
-import { Alert, Button, StyleSheet, TextInput, TouchableOpacity, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { commonStyles } from '../helper/helper'
+import { Context } from '../helper/context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import FormItem from '../Components/FormItem';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { deleteFromDB, updateInDB, writeToDB } from '../Firebase/firestoreHelper';
+import Checkbox from 'expo-checkbox';
+import PressableButton from '../Components/PressableButton';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function AddADietEntry({navigation, theme, addADietEntry}) {
+export default function AddADietEntry({navigation, route}) {
+  const { theme } = useContext(Context);
   const [isCalendarShow, setIsCalendarShow] = useState(false);
-  const [description, setDescription] = useState('');
-  const [calories, setCalories] = useState('');
-  const [date, setDate] = useState(null);
+  const [description, setDescription] = useState(route.params?.item.name);
+  const [calories, setCalories] = useState(route.params?.item.value.toString());
+  const [date, setDate] = useState(route.params?.item ? new Date(route.params.item.date) : null);
+  const [isApproved, setIsApproved] = useState(route.params?.item?.isApproved);
+  const collectionName = 'diet';
+  
+  useEffect(() => {
+    if (route.params?.item) {
+      navigation.setOptions({
+        headerRight: () =>
+          <Pressable
+            android_ripple={{color: 'white', radius: 20}}
+            style={({pressed}) => [commonStyles.headerIcons, pressed && commonStyles.pressedStyle]}
+            onPress={handleDelete}
+          >
+            <Ionicons name="trash" size={24} color="white" />
+          </Pressable>,
+      })
+    }
+  }, [])
+
+  const handleDelete = () => {
+    Alert.alert("Delete", "Are you sure you want to delete this item?", [
+      {
+        text: "No",
+      },
+      {
+        text: "Yes",
+        onPress: () => {
+          deleteFromDB(route.params?.item.id, collectionName);
+          navigation.goBack();
+        },
+      },
+    ])
+  }
 
   const handlePressOut = () => {
+    if (!isCalendarShow && !date) {
+      setDate(new Date());
+    }
     setIsCalendarShow(prev => !prev);
   }
 
@@ -19,18 +59,41 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
     navigation.goBack();
   }
 
+  const handleSaveChanges = (data, id) => {
+    updateInDB(data, id, collectionName);
+    navigation.goBack();
+  }
+
   const handleSave = () => {
+    // validate the inputs
     if (!description || !date || !calories || isNaN(calories) || Number(calories) < 0) {
       Alert.alert('Invalid input', 'Please fill the fields correctly.');
       return;
     }
-    addADietEntry({
+    const data = {
       name: description,
       value: Number(calories),
-      date: date.toString().slice(0, 15),
+      date: date.getTime(),
       isSpecial: Number(calories) > 800,
-    });
-    navigation.goBack();
+    }
+    if (data.isSpecial) {
+      data.isApproved = !!isApproved;
+    }
+    // If the item is being edited, ask for confirmation before saving changes.
+    if (route.params?.item) {
+      Alert.alert("Important", "Are you sure you want to save these changes?", [
+        {
+          text: "No",
+        },
+        {
+          text: "Yes",
+          onPress: () => handleSaveChanges(data, route.params?.item.id),
+        },
+      ])
+    } else {
+      writeToDB(data, collectionName);
+      navigation.goBack();
+    }
   }
 
   return (
@@ -44,7 +107,7 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
             multiline={true}
             placeholder="Enter description"
             placeholderTextColor="#9e9e9e"
-            onChangeText={setDescription}
+            onChangeText={newDescription => setDescription(newDescription)}
           />
         </View>
       </FormItem>
@@ -57,7 +120,7 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
             placeholder="Enter calories"
             placeholderTextColor="#9e9e9e"
             keyboardType="numeric"
-            onChangeText={setCalories}
+            onChangeText={newCalories => setCalories(newCalories)}
           />
         </View>
         </FormItem>
@@ -81,9 +144,17 @@ export default function AddADietEntry({navigation, theme, addADietEntry}) {
           />}
         </View>
       </FormItem>
-      {!isCalendarShow && <View style={commonStyles.buttonGroup}>
-        <Button title='Cancel' onPress={handleCancel} />
-        <Button title='Save' onPress={handleSave} />
+      {!isCalendarShow && 
+      <View style={commonStyles.bottomGroup}>
+        {route.params?.item.isSpecial &&
+        <View style={commonStyles.checkbox}>
+          <Text style={commonStyles.checkboxText}>This item is marked as special. Select the checkbox if you would like to approve it.</Text>
+          <Checkbox value={isApproved} onValueChange={setIsApproved} />
+        </View>}
+        <View style={commonStyles.buttonGroup}>
+          <PressableButton pressedFunction={handleCancel} title="Cancel" componentStyle={commonStyles.cancelButtonStyle} />
+          <PressableButton pressedFunction={handleSave} title="Save" />
+        </View>
       </View>}
     </View>
   )
