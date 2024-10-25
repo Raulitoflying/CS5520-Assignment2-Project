@@ -1,55 +1,27 @@
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator  } from '@react-navigation/native-stack';
 import AddAnActivity from './Screens/AddAnActivity';
-import AddADietEntry from './Screens/AddADietEntry'; 
-import Home from './Components/Home'; 
+import AddADietEntry from './Screens/AddADietEntry';
+import Home from './Components/Home';
 import { colors, commonStyles } from './helper/helper';
-import React, { useState } from 'react';
+import { ContextProvider } from './helper/context';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator ();
 
 export default function App() {
-  const [theme, setTheme] = useState('light');
-  const [activities, setActivities] = useState([]);
-  const [diet, setDiet] = useState([]);
-
-  const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
-  };
-
-  const addAnActivity = (newActivity) => {
-    setActivities(prevActivity => [...prevActivity, newActivity]);
-  };
-
-  const addADietEntry = (newDietEntry) => {
-    setDiet(prevDietEntry => [...prevDietEntry, newDietEntry]);
-  };
-
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerStyle: commonStyles.navigatorBackground, headerTintColor: colors.white }}>
-        <Stack.Screen name='Home' options={{ headerShown: false }}>
-          {props => (
-            <Home
-              {...props}
-              theme={theme}
-              activities={activities}
-              diet={diet}
-              toggleTheme={toggleTheme}
-              addAnActivity={addAnActivity}
-              addADietEntry={addADietEntry}
-            />
-          )}
-        </Stack.Screen>
-        <Stack.Screen name='AddAnActivity'>
-          {props => <AddAnActivity {...props} theme={theme} addAnActivity={addAnActivity} />}
-        </Stack.Screen>
-        <Stack.Screen name='AddADietEntry'>
-          {props => <AddADietEntry {...props} theme={theme} addADietEntry={addADietEntry} />}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerStyle: commonStyles.navigatorBackground, headerTintColor: colors.white }}>
+          <Stack.Screen name='Home' component={Home} options={{ headerShown: false }} />
+          <Stack.Screen name='AddAnActivity' component={AddAnActivity} options={{ title: 'Add An Activity'}} />
+          <Stack.Screen name='AddADietEntry' component={AddADietEntry} options={{ title: 'Add A Diet Entry'}} />
+          <Stack.Screen name='EditAnActivity' component={AddAnActivity} options={{title: 'Edit'}} />
+          <Stack.Screen name='EditADietEntry' component={AddADietEntry} options={{ title: 'Edit'}} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ContextProvider>
   );
 }
 
