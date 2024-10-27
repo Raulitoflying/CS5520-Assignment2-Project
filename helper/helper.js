@@ -1,6 +1,5 @@
 import { StyleSheet } from "react-native"
 
-// the color set
 export const colors = {
     bluishViolet: '#363678',
     yellow: '#f7bc0c',
@@ -22,10 +21,17 @@ export const commonStyles = StyleSheet.create({
     item: {
         width: '100%',
         marginVertical: 12,
+        borderRadius: 10,
+        padding: 10,
+        shadowColor: colors.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
     },
     formItemText: {
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 10,
     },
     formItem: {
         backgroundColor: colors.grey,
