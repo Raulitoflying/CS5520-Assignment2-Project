@@ -1,104 +1,136 @@
-import { Alert, Pressable, StyleSheet, Text, TextInput, View, } from 'react-native'
+import { 
+  Alert, 
+  Pressable, 
+  StyleSheet, 
+  Text, 
+  TextInput, 
+  View 
+} from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { commonStyles } from '../helper/helper'
-import { Context } from '../helper/context';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import FormItem from '../Components/FormItem';
-import { deleteFromDB, updateInDB, writeToDB } from '../Firebase/firebaseHelper';
-import Checkbox from 'expo-checkbox';
-import PressableButton from '../Components/PressableButton';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { Context } from '../helper/context'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import FormItem from '../Components/FormItem'
+import { deleteFromDB, updateInDB, writeToDB } from '../Firebase/firebaseHelper'
+import Checkbox from 'expo-checkbox'
+import PressableButton from '../Components/PressableButton'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/MaterialIcons'
 
-export default function AddADietEntry({navigation, route}) {
-  const { theme } = useContext(Context);
-  const [isCalendarShow, setIsCalendarShow] = useState(false);
-  const [description, setDescription] = useState(route.params?.item.name);
-  const [calories, setCalories] = useState(route.params?.item.value.toString());
-  const [date, setDate] = useState(route.params?.item ? new Date(route.params.item.date) : null);
-  const [isApproved, setIsApproved] = useState(route.params?.item?.isApproved);
-  const collectionName = 'diet';
+
+export default function AddADietEntry({ navigation, route }) {
+  // Context and state management
+  const { theme } = useContext(Context)
+  const [isCalendarShow, setIsCalendarShow] = useState(false)
+  const [description, setDescription] = useState(route.params?.item.name)
+  const [calories, setCalories] = useState(route.params?.item.value.toString())
+  const [date, setDate] = useState(route.params?.item ? new Date(route.params.item.date) : null)
+  const [isApproved, setIsApproved] = useState(route.params?.item?.isApproved)
+  
+  // Constants
+  const CALORIE_THRESHOLD = 800
+  const COLLECTION_NAME = 'diet'
+
   
   useEffect(() => {
     if (route.params?.item) {
       navigation.setOptions({
-        headerRight: () =>
+        headerRight: () => (
           <Pressable
-            android_ripple={{color: 'white', radius: 20}}
-            style={({pressed}) => [commonStyles.headerIcons, pressed && commonStyles.pressedStyle]}
+            android_ripple={{ color: 'white', radius: 20 }}
+            style={({ pressed }) => [
+              commonStyles.headerIcons,
+              pressed && commonStyles.pressedStyle
+            ]}
             onPress={handleDelete}
           >
             <Ionicons name="trash" size={24} color="white" />
-          </Pressable>,
+          </Pressable>
+        ),
       })
     }
   }, [])
 
+  
   const handleDelete = () => {
-    Alert.alert("Delete", "Are you sure you want to delete this item?", [
-      {
-        text: "No",
-      },
-      {
-        text: "Yes",
-        onPress: () => {
-          deleteFromDB(route.params?.item.id, collectionName);
-          navigation.goBack();
+    Alert.alert(
+      "Delete",
+      "Are you sure you want to delete this item?",
+      [
+        { text: "No" },
+        {
+          text: "Yes",
+          onPress: () => {
+            deleteFromDB(route.params?.item.id, COLLECTION_NAME)
+            navigation.goBack()
+          },
         },
-      },
-    ])
+      ]
+    )
   }
 
+  
   const handlePressOut = () => {
     if (!isCalendarShow && !date) {
-      setDate(new Date());
+      setDate(new Date())
     }
-    setIsCalendarShow(prev => !prev);
+    setIsCalendarShow(prev => !prev)
   }
 
+  
   const handleCancel = () => {
-    navigation.goBack();
+    navigation.goBack()
   }
 
+  
   const handleSaveChanges = (data, id) => {
-    updateInDB(data, id, collectionName);
-    navigation.goBack();
+    updateInDB(data, id, COLLECTION_NAME)
+    navigation.goBack()
   }
 
+  
   const handleSave = () => {
-    // validate the inputs
+    // Input validation
     if (!description || !date || !calories || isNaN(calories) || Number(calories) < 0) {
-      Alert.alert('Invalid input', 'Please fill the fields correctly.');
-      return;
+      Alert.alert('Invalid input', 'Please fill the fields correctly.')
+      return
     }
+
+    // Prepare data object
     const data = {
       name: description,
       value: Number(calories),
       date: date.getTime(),
-      isSpecial: Number(calories) > 800,
+      isSpecial: Number(calories) > CALORIE_THRESHOLD,
     }
+
+    // Add approval status for special items
     if (data.isSpecial) {
-      data.isApproved = !!isApproved;
+      data.isApproved = !!isApproved
     }
-    // If the item is being edited, ask for confirmation before saving changes.
+
+    // Handle update vs new entry
     if (route.params?.item) {
-      Alert.alert("Important", "Are you sure you want to save these changes?", [
-        {
-          text: "No",
-        },
-        {
-          text: "Yes",
-          onPress: () => handleSaveChanges(data, route.params?.item.id),
-        },
-      ])
+      Alert.alert(
+        "Important",
+        "Are you sure you want to save these changes?",
+        [
+          { text: "No" },
+          {
+            text: "Yes",
+            onPress: () => handleSaveChanges(data, route.params?.item.id),
+          },
+        ]
+      )
     } else {
-      writeToDB(data, collectionName);
-      navigation.goBack();
+      writeToDB(data, COLLECTION_NAME)
+      navigation.goBack()
     }
   }
 
   return (
     <View style={[commonStyles.centerContainer, commonStyles[theme], commonStyles.content]}>
+      {/* Description Input */}
       <FormItem label='Description *'>
         <View style={styles.inputContainer}>
           <Icon name="description" size={24} color="#757575" style={styles.icon} />
@@ -108,10 +140,12 @@ export default function AddADietEntry({navigation, route}) {
             multiline={true}
             placeholder="Enter description"
             placeholderTextColor="#9e9e9e"
-            onChangeText={newDescription => setDescription(newDescription)}
+            onChangeText={setDescription}
           />
         </View>
       </FormItem>
+
+      {/* Calories Input */}
       <FormItem label='Calories *'>
         <View style={styles.inputContainer}>
           <Icon name="local-fire-department" size={24} color="#757575" style={styles.icon} />
@@ -121,10 +155,12 @@ export default function AddADietEntry({navigation, route}) {
             placeholder="Enter calories"
             placeholderTextColor="#9e9e9e"
             keyboardType="numeric"
-            onChangeText={newCalories => setCalories(newCalories)}
+            onChangeText={setCalories}
           />
         </View>
-        </FormItem>
+      </FormItem>
+
+      {/* Date Picker */}
       <FormItem label='Date *'>
         <TextInput
           style={[commonStyles.formItem, commonStyles.input]}
@@ -135,32 +171,48 @@ export default function AddADietEntry({navigation, route}) {
           onBlur={() => setIsCalendarShow(false)}
         />
         <View style={commonStyles.dateTimePicker}>
-          {isCalendarShow && <DateTimePicker
-            value={date || new Date()}
-            onChange={(event, selectedDate) => {
-              setIsCalendarShow(false);
-              setDate(selectedDate);
-            }}
-            display="inline"
-          />}
+          {isCalendarShow && (
+            <DateTimePicker
+              value={date || new Date()}
+              onChange={(event, selectedDate) => {
+                setIsCalendarShow(false)
+                setDate(selectedDate)
+              }}
+              display="inline"
+            />
+          )}
         </View>
       </FormItem>
-      {!isCalendarShow && 
-      <View style={commonStyles.bottomGroup}>
-        {route.params?.item.isSpecial &&
-        <View style={commonStyles.checkbox}>
-          <Text style={commonStyles.checkboxText}>This item is marked as special. Select the checkbox if you would like to approve it.</Text>
-          <Checkbox value={isApproved} onValueChange={setIsApproved} />
-        </View>}
-        <View style={commonStyles.buttonGroup}>
-          <PressableButton pressedFunction={handleCancel} title="Cancel" componentStyle={commonStyles.cancelButtonStyle} />
-          <PressableButton pressedFunction={handleSave} title="Save" />
+
+      {/* Bottom Section - Approval Checkbox and Action Buttons */}
+      {!isCalendarShow && (
+        <View style={commonStyles.bottomGroup}>
+          {route.params?.item.isSpecial && (
+            <View style={commonStyles.checkbox}>
+              <Text style={commonStyles.checkboxText}>
+                This item is marked as special. Select the checkbox if you would like to approve it.
+              </Text>
+              <Checkbox value={isApproved} onValueChange={setIsApproved} />
+            </View>
+          )}
+          <View style={commonStyles.buttonGroup}>
+            <PressableButton 
+              pressedFunction={handleCancel} 
+              title="Cancel" 
+              componentStyle={commonStyles.cancelButtonStyle} 
+            />
+            <PressableButton 
+              pressedFunction={handleSave} 
+              title="Save" 
+            />
+          </View>
         </View>
-      </View>}
+      )}
     </View>
   )
 }
 
+// Styles
 const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
@@ -219,4 +271,4 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#ffffff',
   },
-});
+})
